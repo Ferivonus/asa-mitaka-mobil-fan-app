@@ -1,51 +1,60 @@
+import 'package:asa_mitaka_fan_app/data/language.dart';
+import 'package:asa_mitaka_fan_app/data/settings_texts.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({super.key});
+  final Language language;
+
+  const SettingsPage({super.key, this.language = Language.tr});
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  String _currentLanguage = "tr";
+  late Language _currentLanguage;
 
   @override
   void initState() {
     super.initState();
+    _currentLanguage = widget.language;
     _loadLanguage();
   }
 
   Future<void> _loadLanguage() async {
     final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _currentLanguage = prefs.getString('language') ?? "tr";
-    });
+    final savedLang = prefs.getString('language');
+    if (savedLang != null) {
+      setState(() {
+        _currentLanguage = Language.values.firstWhere(
+          (e) => e.name == savedLang,
+          orElse: () => Language.en,
+        );
+      });
+    }
   }
 
-  Future<void> _changeLanguage(String lang) async {
+  Future<void> _changeLanguage(Language lang) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('language', lang);
+    await prefs.setString('language', lang.name);
     setState(() {
       _currentLanguage = lang;
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          lang == "en"
-              ? "Language set to English"
-              : "Dil Türkçe olarak ayarlandı",
-        ),
-      ),
-    );
+
+    final texts = SettingsTexts(language: _currentLanguage);
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(texts.snackBarLanguageSet)));
   }
 
   @override
   Widget build(BuildContext context) {
+    final texts = SettingsTexts(language: _currentLanguage);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Settings"),
+        title: Text(texts.pageTitle),
         backgroundColor: Colors.deepPurple,
       ),
       body: Padding(
@@ -53,9 +62,9 @@ class _SettingsPageState extends State<SettingsPage> {
         child: Column(
           children: [
             ListTile(
-              title: const Text("Türkçe"),
-              leading: Radio<String>(
-                value: "tr",
+              title: Text(texts.languageTurkish),
+              leading: Radio<Language>(
+                value: Language.tr,
                 groupValue: _currentLanguage,
                 onChanged: (value) {
                   if (value != null) _changeLanguage(value);
@@ -63,9 +72,9 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
             ListTile(
-              title: const Text("English"),
-              leading: Radio<String>(
-                value: "en",
+              title: Text(texts.languageEnglish),
+              leading: Radio<Language>(
+                value: Language.en,
                 groupValue: _currentLanguage,
                 onChanged: (value) {
                   if (value != null) _changeLanguage(value);

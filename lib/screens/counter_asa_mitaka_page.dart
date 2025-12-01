@@ -1,5 +1,7 @@
-import 'package:asa_mitaka_fan_app/data/messages.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:asa_mitaka_fan_app/data/language.dart';
+import 'package:asa_mitaka_fan_app/data/messages.dart';
 
 class CounterAsaPage extends StatefulWidget {
   const CounterAsaPage({super.key});
@@ -10,13 +12,31 @@ class CounterAsaPage extends StatefulWidget {
 
 class _CounterAsaPageState extends State<CounterAsaPage> {
   int _counter = 0;
-
   AsaMode _currentMode = AsaMode.funny;
+  late AsaMessages _messages;
+  Language _currentLanguage = Language.en; // default dil
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLanguage();
+  }
+
+  Future<void> _loadLanguage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedLang = prefs.getString('language');
+
+    setState(() {
+      _currentLanguage = Language.values.firstWhere(
+        (lang) => lang.name == savedLang,
+        orElse: () => Language.en,
+      );
+      _messages = AsaMessages(language: _currentLanguage);
+    });
+  }
 
   String get _currentMessage {
-    final list = _currentMode == AsaMode.funny
-        ? AsaMessages.funnyMessages
-        : AsaMessages.romanticMessages;
+    final list = _messages.getMessages(_currentMode);
     return list[_counter % list.length];
   }
 
@@ -31,35 +51,34 @@ class _CounterAsaPageState extends State<CounterAsaPage> {
       _currentMode = _currentMode == AsaMode.funny
           ? AsaMode.romantic
           : AsaMode.funny;
-
       _counter = 0;
     });
 
-    // Küçük Snackbar efekti
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          "Mode switched to ${_currentMode == AsaMode.funny ? "Funny" : "Romantic"}!",
+          "${_messages.getUI("modeSwitchedSnack")}${_currentMode == AsaMode.funny ? _messages.getUI("modeFunny") : _messages.getUI("modeRomantic")}",
         ),
         duration: const Duration(milliseconds: 700),
       ),
     );
   }
 
-  String get _modeLabel =>
-      _currentMode == AsaMode.funny ? "Funny Mode" : "Romantic Mode";
+  String get _modeLabel => _currentMode == AsaMode.funny
+      ? _messages.getUI("modeFunny")
+      : _messages.getUI("modeRomantic");
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Asa Mitaka Counter'),
+        title: Text(_messages.getUI("appBarTitle")),
         backgroundColor: Colors.deepPurple,
         actions: [
           IconButton(
             icon: const Icon(Icons.swap_horiz),
             onPressed: _toggleMode,
-            tooltip: "Switch Mode",
+            tooltip: _messages.getUI("switchMode"),
           ),
         ],
       ),
@@ -77,8 +96,12 @@ class _CounterAsaPageState extends State<CounterAsaPage> {
                   vertical: 12,
                 ),
               ),
-              child: const Text("Switch Mode", style: TextStyle(fontSize: 16)),
+              child: Text(
+                _messages.getUI("switchMode"),
+                style: const TextStyle(fontSize: 16),
+              ),
             ),
+            const SizedBox(height: 10),
             Text(
               _modeLabel,
               style: const TextStyle(
@@ -87,10 +110,7 @@ class _CounterAsaPageState extends State<CounterAsaPage> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-
             const SizedBox(height: 15),
-
-            // Asa Image
             Container(
               width: 120,
               height: 120,
@@ -102,10 +122,7 @@ class _CounterAsaPageState extends State<CounterAsaPage> {
                 ),
               ),
             ),
-
             const SizedBox(height: 20),
-
-            // Current Message
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
@@ -118,21 +135,16 @@ class _CounterAsaPageState extends State<CounterAsaPage> {
                 ),
               ),
             ),
-
             const SizedBox(height: 30),
-
-            const Text(
-              'Counter:',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            Text(
+              _messages.getUI("counterLabel"),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             Text(
               "$_counter",
               style: Theme.of(context).textTheme.headlineMedium,
             ),
-
             const SizedBox(height: 20),
-
-            // Click button
             ElevatedButton(
               onPressed: _incrementCounter,
               style: ElevatedButton.styleFrom(
@@ -143,12 +155,12 @@ class _CounterAsaPageState extends State<CounterAsaPage> {
                   vertical: 12,
                 ),
               ),
-              child: const Text('Click!', style: TextStyle(fontSize: 18)),
+              child: Text(
+                _messages.getUI("clickButton"),
+                style: const TextStyle(fontSize: 18),
+              ),
             ),
-
             const SizedBox(height: 20),
-
-            // Mode switch button
           ],
         ),
       ),

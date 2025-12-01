@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:asa_mitaka_fan_app/data/language.dart';
+import 'package:asa_mitaka_fan_app/data/notes_texts.dart';
 
 class NotesPage extends StatefulWidget {
   const NotesPage({super.key});
@@ -10,10 +12,31 @@ class NotesPage extends StatefulWidget {
 
 class _NotesPageState extends State<NotesPage> {
   final TextEditingController _controller = TextEditingController();
+  late NotesTexts _texts;
+  Language _currentLanguage = Language.en;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLanguage();
+  }
+
+  Future<void> _loadLanguage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedLang = prefs.getString('language');
+
+    setState(() {
+      _currentLanguage = Language.values.firstWhere(
+        (lang) => lang.name == savedLang,
+        orElse: () => Language.en,
+      );
+      _texts = NotesTexts(language: _currentLanguage);
+    });
+  }
 
   Future<void> _saveNote() async {
     if (_controller.text.isNotEmpty) {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final prefs = await SharedPreferences.getInstance();
       final List<String> notes = prefs.getStringList('notes') ?? [];
       notes.add(_controller.text);
       await prefs.setStringList('notes', notes);
@@ -22,16 +45,18 @@ class _NotesPageState extends State<NotesPage> {
         _controller.clear();
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Your note has been saved.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(_texts.snackbarSaved)));
     }
   }
 
   void _navigateToNotes() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const MyNotesPage()),
+      MaterialPageRoute(
+        builder: (context) => MyNotesPage(currentLanguage: _currentLanguage),
+      ),
     );
   }
 
@@ -39,9 +64,9 @@ class _NotesPageState extends State<NotesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Notes',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          _texts.pageTitle,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.deepPurple,
       ),
@@ -50,25 +75,25 @@ class _NotesPageState extends State<NotesPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Write down what’s on your mind.',
-              style: TextStyle(
+            Text(
+              _texts.instructionTitle,
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: Colors.deepPurple,
               ),
             ),
             const SizedBox(height: 10),
-            const Text(
-              'Thoughts, memories, things you don’t want to forget… everything stays on your device only.',
-              style: TextStyle(fontSize: 14),
+            Text(
+              _texts.instructionSubtitle,
+              style: const TextStyle(fontSize: 14),
             ),
             const SizedBox(height: 20),
             TextField(
               controller: _controller,
-              decoration: const InputDecoration(
-                labelText: 'Your note',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: _texts.labelNote,
+                border: const OutlineInputBorder(),
               ),
               maxLines: 4,
             ),
@@ -82,9 +107,9 @@ class _NotesPageState extends State<NotesPage> {
                   vertical: 12,
                 ),
               ),
-              child: const Text(
-                'Save',
-                style: TextStyle(fontSize: 16, color: Colors.white),
+              child: Text(
+                _texts.saveButton,
+                style: const TextStyle(fontSize: 16, color: Colors.white),
               ),
             ),
             const Spacer(),
@@ -92,9 +117,9 @@ class _NotesPageState extends State<NotesPage> {
               child: ElevatedButton.icon(
                 onPressed: _navigateToNotes,
                 icon: const Icon(Icons.notes, color: Colors.white),
-                label: const Text(
-                  'View Notes',
-                  style: TextStyle(color: Colors.white),
+                label: Text(
+                  _texts.viewNotesButton,
+                  style: const TextStyle(color: Colors.white),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepPurple,
@@ -113,7 +138,9 @@ class _NotesPageState extends State<NotesPage> {
 }
 
 class MyNotesPage extends StatefulWidget {
-  const MyNotesPage({super.key});
+  final Language currentLanguage;
+
+  const MyNotesPage({super.key, required this.currentLanguage});
 
   @override
   State<MyNotesPage> createState() => _MyNotesPageState();
@@ -121,35 +148,37 @@ class MyNotesPage extends StatefulWidget {
 
 class _MyNotesPageState extends State<MyNotesPage> {
   List<String> _notes = [];
+  late NotesTexts _texts;
+
+  @override
+  void initState() {
+    super.initState();
+    _texts = NotesTexts(language: widget.currentLanguage);
+    _loadNotes();
+  }
 
   Future<void> _loadNotes() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
     setState(() {
       _notes = prefs.getStringList('notes') ?? [];
     });
   }
 
   @override
-  void initState() {
-    super.initState();
-    _loadNotes();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'My Notes',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          _texts.pageTitle,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.deepPurple,
       ),
       body: _notes.isEmpty
-          ? const Center(
+          ? Center(
               child: Text(
-                'You haven’t written anything yet about asa.',
-                style: TextStyle(fontSize: 16),
+                _texts.emptyNotes,
+                style: const TextStyle(fontSize: 16),
               ),
             )
           : ListView.builder(

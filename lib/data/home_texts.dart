@@ -1,92 +1,76 @@
-enum Language { en, tr }
+import 'language.dart';
 
 class HomeTexts {
   final Language language;
-
   HomeTexts({this.language = Language.en});
 
-  String get welcomeTitle {
+  // Ana sayfa metinleri
+  static const Map<String, Map<String, String>> _texts = {
+    "tr": {
+      "welcomeTitle": "Asa Mitaka Fan Uygulamasına Hoşgeldiniz!",
+      "mainDescription":
+          "Asa Mitaka, utangaç ama kararlı bir lise öğrencisidir. "
+          "Yoru, Savaş Şeytanı, onun bedenine yerleşir ve Asa, korkularıyla, arkadaşlıklarıyla ve kişisel gelişimiyle yüzleşir. "
+          "Bu yolculuk onu Chainsaw Man’in en sevilen karakterlerinden biri yapar.",
+      "charactersButton": "Karakterler",
+      "animeInfoButton": "Chainsaw Man & Asa",
+      "counterButton": "Asa Mitaka Sayacı",
+      "notesButton": "Notlar",
+      "settingsButton": "Ayarlar",
+      "footerText":
+          "Asa Mitaka ve Tatsuki Fujimoto’nun Chainsaw Man dünyasına adanmış fan yapımı bir uygulama.",
+      "footerLink":
+          "Asa Mitaka ve Savaş Şeytanı hakkında daha fazla bilgi edinin.",
+    },
+    "en": {
+      "welcomeTitle": "Welcome to the Asa Mitaka Fan App!",
+      "mainDescription":
+          "Asa Mitaka, the awkward yet strong-willed schoolgirl, becomes the host of Yoru, the War Devil. "
+          "She navigates fear, friendships, and personal growth, making her one of the most beloved characters in Chainsaw Man.",
+      "charactersButton": "Characters",
+      "animeInfoButton": "Chainsaw Man & Asa",
+      "counterButton": "Asa Mitaka Counter",
+      "notesButton": "Notes",
+      "settingsButton": "Settings",
+      "footerText":
+          "Fan-made app dedicated to Asa Mitaka & Tatsuki Fujimoto’s world of Chainsaw Man.",
+      "footerLink": "Learn more about Asa Mitaka & the War Devil.",
+    },
+  };
+
+  String get(String key) {
+    return _texts[language.name]?[key] ?? _texts["en"]![key]!;
+  }
+}
+
+// Dialog için ayrı bir class
+class LanguagePromptTexts {
+  final Language language;
+  LanguagePromptTexts({this.language = Language.en});
+
+  String get title {
     switch (language) {
-      case Language.tr:
-        return "Asa Mitaka Fan Uygulamasına Hoş Geldiniz!";
       case Language.en:
-      default:
-        return "Welcome to the Asa Mitaka Fan App!";
+        return "Select Language";
+      case Language.tr:
+        return "Dil Seçin";
     }
   }
 
-  String get mainDescription {
+  String get content {
     switch (language) {
-      case Language.tr:
-        return """
-Asa Mitaka, sosyal açıdan çekingen ama kararlı bir okul kızıdır. 
-Yoru, War Devil, onun bedenine yerleşir ve Asa, korkularıyla, arkadaşlıklarıyla, kişisel gelişimiyle ve tüm kaotik anlarıyla başa çıkar. 
-Bu yolculuk, onu Chainsaw Man evreninin en sevilen karakterlerinden biri yapar.""";
       case Language.en:
-      default:
-        return """
-Asa Mitaka, the socially awkward yet strong-willed schoolgirl, becomes the host of Yoru, the War Devil. 
-She navigates fear, friendships, personal growth, and all the chaotic moments, making her one of the most beloved characters in Chainsaw Man.""";
+        return "Please select the language for the app.";
+      case Language.tr:
+        return "Lütfen uygulama için bir dil seçin.";
     }
   }
 
-  String get charactersButton {
-    switch (language) {
-      case Language.tr:
-        return "Karakterler";
-      case Language.en:
-      default:
-        return "Characters";
-    }
+  String get optionTr {
+    return "Türkçe";
   }
 
-  String get animeInfoButton {
-    switch (language) {
-      case Language.tr:
-        return "Chainsaw Man & Asa";
-      case Language.en:
-      default:
-        return "Chainsaw Man & Asa";
-    }
-  }
-
-  String get counterButton {
-    switch (language) {
-      case Language.tr:
-        return "Asa Mitaka Sayacı";
-      case Language.en:
-      default:
-        return "Asa Mitaka Counter";
-    }
-  }
-
-  String get notesButton {
-    switch (language) {
-      case Language.tr:
-        return "Notlar";
-      case Language.en:
-      default:
-        return "Notes";
-    }
-  }
-
-  String get footerText {
-    switch (language) {
-      case Language.tr:
-        return "Asa Mitaka ve Tatsuki Fujimoto’nun Chainsaw Man dünyasına adanmış hayran yapımı bir uygulama.";
-      case Language.en:
-      default:
-        return "Fan-made app dedicated to Asa Mitaka & Tatsuki Fujimoto’s world of Chainsaw Man.";
-    }
-  }
-
-  String get footerLink {
-    switch (language) {
-      case Language.tr:
-        return "Asa Mitaka ve War Devil hakkında daha fazla bilgi edinin.";
-      case Language.en:
-      default:
-        return "Learn more about Asa Mitaka & the War Devil.";
-    }
+  String get optionEn {
+    return "English";
   }
 }
