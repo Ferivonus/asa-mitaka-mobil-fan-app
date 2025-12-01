@@ -20,12 +20,12 @@ class CharactersPage extends StatelessWidget {
             CharacterCard(
               name: 'Asa Mitaka',
               description: CharacterData.descriptions['Asa Mitaka']!,
-              imagePath: 'lib/assets/images/asa.jpg',
+              imagePath: 'lib/assets/images/asa.png',
             ),
             CharacterCard(
               name: 'Yoru (War Devil)',
               description: CharacterData.descriptions['Yoru (War Devil)']!,
-              imagePath: 'lib/assets/images/yoru.jpg',
+              imagePath: 'lib/assets/images/yoru.png',
             ),
           ],
         ),

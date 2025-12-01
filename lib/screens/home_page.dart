@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import '../data/home_texts.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  final Language language;
+  const HomePage({super.key, this.language = Language.en});
 
   @override
   Widget build(BuildContext context) {
+    final texts = HomeTexts(language: language);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Asa Mitaka Fan App',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         backgroundColor: Colors.deepPurple,
@@ -20,9 +24,9 @@ class HomePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Welcome Section
-            const Text(
-              'Welcome to the Asa Mitaka Fan App!',
-              style: TextStyle(
+            Text(
+              texts.welcomeTitle,
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: Colors.deepPurple,
@@ -32,16 +36,16 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 10),
 
             // Asa Mitaka main section
-            const Column(
+            Column(
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   backgroundImage: AssetImage(
                     'lib/assets/images/asa-mitaka-cute-1.png',
                   ),
                   radius: 60,
                 ),
-                SizedBox(height: 16),
-                Text(
+                const SizedBox(height: 16),
+                const Text(
                   'Asa Mitaka',
                   style: TextStyle(
                     fontSize: 20,
@@ -49,10 +53,10 @@ class HomePage extends StatelessWidget {
                     color: Colors.deepPurple,
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Text(
-                  'Asa Mitaka, the awkward yet strong-willed schoolgirl, becomes the host of Yoru, the War Devil. Follow her journey through fear, friendships, growth, and all the chaotic moments that make her one of the most beloved characters in Chainsaw Man.',
-                  style: TextStyle(fontSize: 14),
+                  texts.mainDescription,
+                  style: const TextStyle(fontSize: 14),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -70,7 +74,7 @@ class HomePage extends StatelessWidget {
                     Navigator.pushNamed(context, '/characters');
                   },
                   icon: const Icon(Icons.people, size: 20),
-                  label: const Text('Characters'),
+                  label: Text(texts.charactersButton),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     padding: const EdgeInsets.symmetric(
@@ -84,7 +88,7 @@ class HomePage extends StatelessWidget {
                     Navigator.pushNamed(context, '/anime-info');
                   },
                   icon: const Icon(Icons.info, size: 20),
-                  label: const Text('Chainsaw Man & Asa'),
+                  label: Text(texts.animeInfoButton),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     padding: const EdgeInsets.symmetric(
@@ -98,7 +102,7 @@ class HomePage extends StatelessWidget {
                     Navigator.pushNamed(context, '/counter-asa-mitaka');
                   },
                   icon: const Icon(Icons.countertops, size: 20),
-                  label: const Text('Asa Mitaka Counter'),
+                  label: Text(texts.counterButton),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     padding: const EdgeInsets.symmetric(
@@ -112,7 +116,7 @@ class HomePage extends StatelessWidget {
                     Navigator.pushNamed(context, '/notes');
                   },
                   icon: const Icon(Icons.note_add, size: 20),
-                  label: const Text('Notes'),
+                  label: Text(texts.notesButton),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     padding: const EdgeInsets.symmetric(
@@ -123,13 +127,12 @@ class HomePage extends StatelessWidget {
                 ),
               ],
             ),
-
             const SizedBox(height: 40),
 
             // Footer Section
             const Divider(),
             Text(
-              'Fan-made app dedicated to Asa Mitaka & Tatsuki Fujimoto’s world of Chainsaw Man.',
+              texts.footerText,
               style: TextStyle(
                 fontSize: 12,
                 fontStyle: FontStyle.italic,
@@ -142,9 +145,9 @@ class HomePage extends StatelessWidget {
               onTap: () {
                 // Add link action
               },
-              child: const Text(
-                'Learn more about Asa Mitaka & the War Devil.',
-                style: TextStyle(
+              child: Text(
+                texts.footerLink,
+                style: const TextStyle(
                   fontSize: 12,
                   fontStyle: FontStyle.italic,
                   color: Colors.blue,

@@ -23,7 +23,7 @@ class _NotesPageState extends State<NotesPage> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Note saved securely on your phone!')),
+        const SnackBar(content: Text('Your note has been saved.')),
       );
     }
   }
@@ -40,7 +40,7 @@ class _NotesPageState extends State<NotesPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Write a Note',
+          'Notes',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.deepPurple,
@@ -51,7 +51,7 @@ class _NotesPageState extends State<NotesPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Take a moment to jot down your thoughts!',
+              'Write down what’s on your mind.',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -60,14 +60,14 @@ class _NotesPageState extends State<NotesPage> {
             ),
             const SizedBox(height: 10),
             const Text(
-              'Write anything you like — ideas, reminders, or reflections. All notes are saved securely on your phone and are not uploaded to any database. :3',
+              'Thoughts, memories, things you don’t want to forget… everything stays on your device only.',
               style: TextStyle(fontSize: 14),
             ),
             const SizedBox(height: 20),
             TextField(
               controller: _controller,
               decoration: const InputDecoration(
-                labelText: 'Write your note here',
+                labelText: 'Your note',
                 border: OutlineInputBorder(),
               ),
               maxLines: 4,
@@ -83,7 +83,7 @@ class _NotesPageState extends State<NotesPage> {
                 ),
               ),
               child: const Text(
-                'Save Note',
+                'Save',
                 style: TextStyle(fontSize: 16, color: Colors.white),
               ),
             ),
@@ -93,7 +93,7 @@ class _NotesPageState extends State<NotesPage> {
                 onPressed: _navigateToNotes,
                 icon: const Icon(Icons.notes, color: Colors.white),
                 label: const Text(
-                  'View My Notes',
+                  'View Notes',
                   style: TextStyle(color: Colors.white),
                 ),
                 style: ElevatedButton.styleFrom(
@@ -148,7 +148,7 @@ class _MyNotesPageState extends State<MyNotesPage> {
       body: _notes.isEmpty
           ? const Center(
               child: Text(
-                'No notes available yet! Start jotting down your ideas. :3',
+                'You haven’t written anything yet about asa.',
                 style: TextStyle(fontSize: 16),
               ),
             )

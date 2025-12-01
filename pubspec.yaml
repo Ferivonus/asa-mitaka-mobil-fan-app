@@ -63,8 +63,8 @@ flutter:
   assets:
     - lib/assets/images/asa-mitaka-cute-1.png
     - lib/assets/images/denji.jpg
-    - lib/assets/images/asa.jpg
-    - lib/assets/images/yoru.jpg
+    - lib/assets/images/asa.png
+    - lib/assets/images/yoru.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
